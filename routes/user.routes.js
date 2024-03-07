@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const { StatusCodes } = require("http-status-codes");
 const { exception, message, validationField } = require("../modules/constants");
 const { validationResult } = require("express-validator");
+const { checkAutorization, checkValidUser } = require("../modules/middlewares");
 
 const {
   getUser,
@@ -13,24 +14,15 @@ const {
   findUserByEmail,
   generateToken,
   updateUser,
-  validateUserByToken,
 } = require("../services/user.services");
 
-const { validateName, validateEmail } = require("../modules/validation");
+const { validateName, validateEmail } = require("../modules/validations");
 
 router
   .route("/profile/:_id")
-  .get(async (req, res) => {
-    const token = req.headers.authorization;
+  .get(checkAutorization, checkValidUser, async (req, res) => {
     const userId = +req.params._id;
     try {
-      if (!token) {
-        return res.status(StatusCodes.FORBIDDEN).send(exception.forbidden);
-      }
-      const validUser = validateUserByToken(token, userId);
-      if (!validUser) {
-        return res.status(StatusCodes.FORBIDDEN).send(exception.forbidden);
-      }
       const user = await getUser(userId);
       if (!user) {
         return res.status(StatusCodes.NOT_FOUND).send(exception.notFound);
@@ -41,19 +33,11 @@ router
       console.error(err.message);
     }
   })
-  .put(async (req, res) => {
-    const token = req.headers.authorization;
+  .put(checkAutorization, checkValidUser, async (req, res) => {
     const userId = +req.params._id;
     const { name, surname, email, gender, photo } = req.body;
     const updateUserData = { name, surname, email, gender, photo };
     try {
-      if (!token) {
-        return res.status(StatusCodes.FORBIDDEN).send(exception.forbidden);
-      }
-      const validUser = validateUserByToken(token, userId);
-      if (!validUser) {
-        return res.status(StatusCodes.FORBIDDEN).send(exception.forbidden);
-      }
       await updateUser(updateUserData, userId);
       return res.status(StatusCodes.OK).send(message.userUpdated);
     } catch (err) {
@@ -62,12 +46,8 @@ router
     }
   });
 
-router.route("/profiles").get(async (req, res) => {
-  const token = req.headers.authorization;
+router.route("/profiles").get(checkAutorization, async (req, res) => {
   try {
-    if (!token) {
-      return res.status(StatusCodes.FORBIDDEN).send(exception.forbidden);
-    }
     const { page } = req.query;
     const users = await getUsers({ page });
     if (!users) {
