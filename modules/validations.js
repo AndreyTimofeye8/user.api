@@ -1,12 +1,12 @@
 const { body } = require("express-validator");
-const { validationMessage } = require("./constants");
+const { validationMessage, nameLength, surNameLength } = require("./constants");
 
 const validateName = (name) => {
   return body(name)
     .trim()
     .notEmpty()
     .withMessage(validationMessage.nameMissing)
-    .isLength({ min: 3, max: 20 })
+    .isLength({ min: nameLength.min, max: nameLength.max })
     .withMessage(validationMessage.invalidNameLength)
     .escape();
 };
@@ -26,7 +26,7 @@ const validateSurname = (surname) => {
     .trim()
     .notEmpty()
     .withMessage(validationMessage.surnameMissing)
-    .isLength({ min: 3, max: 30 })
+    .isLength({ min: surNameLength.min, max: surNameLength.max })
     .withMessage(validationMessage.invalidSurnameLength)
     .escape();
 };

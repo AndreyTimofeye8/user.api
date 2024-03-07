@@ -2,7 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const { exception } = require("../modules/constants");
 const { validateUserByToken } = require("../services/user.services");
 
-const checkAutorization = (req, res, next) => {
+const checkAuthorization = (req, res, next) => {
   const token = req.headers.authorization;
   if (!token) {
     return res.status(StatusCodes.FORBIDDEN).send(exception.forbidden);
@@ -20,4 +20,4 @@ const checkValidUser = (req, res, next) => {
   next();
 };
 
-module.exports = { checkAutorization, checkValidUser };
+module.exports = { checkAuthorization, checkValidUser };

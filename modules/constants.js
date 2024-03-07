@@ -27,4 +27,28 @@ const validationField = {
   password: "password",
 };
 
-module.exports = { exception, message, validationField, validationMessage };
+const nameLength = {
+  min: 3,
+  max: 20,
+};
+
+const surNameLength = {
+  min: 3,
+  max: 30,
+};
+
+const saltRounds = 5;
+const pageSize = 10;
+const timeUntilEndToken = "4h";
+
+module.exports = {
+  exception,
+  message,
+  validationField,
+  validationMessage,
+  pageSize,
+  saltRounds,
+  timeUntilEndToken,
+  nameLength,
+  surNameLength,
+};

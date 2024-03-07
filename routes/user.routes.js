@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-
 const { StatusCodes } = require("http-status-codes");
 const { exception, message, validationField } = require("../modules/constants");
 const { validationResult } = require("express-validator");
-const { checkAutorization, checkValidUser } = require("../modules/middlewares");
-
+const {
+  checkAuthorization,
+  checkValidUser,
+} = require("../modules/middlewares");
 const {
   getUser,
   getUsers,
@@ -15,12 +16,11 @@ const {
   generateToken,
   updateUser,
 } = require("../services/user.services");
-
 const { validateName, validateEmail } = require("../modules/validations");
 
 router
   .route("/profile/:_id")
-  .get(checkAutorization, checkValidUser, async (req, res) => {
+  .get(checkAuthorization, checkValidUser, async (req, res) => {
     const userId = +req.params._id;
     try {
       const user = await getUser(userId);
@@ -33,7 +33,7 @@ router
       console.error(err.message);
     }
   })
-  .put(checkAutorization, checkValidUser, async (req, res) => {
+  .put(checkAuthorization, checkValidUser, async (req, res) => {
     const userId = +req.params._id;
     const { name, surname, email, gender, photo } = req.body;
     const updateUserData = { name, surname, email, gender, photo };
@@ -46,7 +46,7 @@ router
     }
   });
 
-router.route("/profiles").get(checkAutorization, async (req, res) => {
+router.route("/profiles").get(checkAuthorization, async (req, res) => {
   try {
     const { page } = req.query;
     const users = await getUsers({ page });
