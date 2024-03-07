@@ -33,7 +33,6 @@ const createUser = (createUserData) => {
 
 const updateUser = (updateUserData, userId) => {
   const { name, surname, email, gender, photo } = updateUserData;
-  console.log(updateUserData);
   const updatedUser = prisma.user.update({
     where: { id: userId },
     data: {
